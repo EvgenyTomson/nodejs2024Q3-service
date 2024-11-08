@@ -36,4 +36,10 @@ export class TrackService {
       throw new NotFoundException(errorMessages.notFound('Track'));
     this.tracks.splice(index, 1);
   }
+
+  nullifyArtistInTracks(artistId: string): void {
+    this.tracks = this.tracks.map((track) =>
+      track.artistId === artistId ? { ...track, artistId: null } : track,
+    );
+  }
 }
