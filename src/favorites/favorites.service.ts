@@ -63,7 +63,7 @@ export class FavoritesService {
     };
   }
 
-  addFavorite(type: 'track' | 'album' | 'artist', id: string) {
+  addFavorite(type: string, id: string) {
     if (!isUuid(id)) throw new BadRequestException(errorMessages.invalidId);
 
     let entityExists = false;
@@ -92,8 +92,12 @@ export class FavoritesService {
       );
   }
 
-  removeFavorite(type: 'track' | 'album' | 'artist', id: string) {
+  removeFavorite(type: string, id: string) {
     if (!isUuid(id)) throw new BadRequestException(errorMessages.invalidId);
+
+    if (!['track', 'album', 'artist'].includes(type)) {
+      throw new BadRequestException(errorMessages.invalidType);
+    }
 
     const list = this.favorites[type + 's'] as string[];
     const index = list.indexOf(id);

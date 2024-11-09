@@ -6,10 +6,8 @@ import {
   Param,
   HttpCode,
   HttpStatus,
-  BadRequestException,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
-import { errorMessages } from '../helpers/constants';
 
 @Controller('favs')
 export class FavoritesController {
@@ -23,21 +21,12 @@ export class FavoritesController {
   @Post(':type/:id')
   @HttpCode(HttpStatus.CREATED)
   addFavorite(@Param('type') type: string, @Param('id') id: string) {
-    if (!['track', 'album', 'artist'].includes(type)) {
-      throw new BadRequestException(errorMessages.invalidType);
-    }
-    this.favoritesService.addFavorite(type as 'track' | 'album' | 'artist', id);
+    this.favoritesService.addFavorite(type, id);
   }
 
   @Delete(':type/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   removeFavorite(@Param('type') type: string, @Param('id') id: string) {
-    if (!['track', 'album', 'artist'].includes(type)) {
-      throw new BadRequestException(errorMessages.invalidType);
-    }
-    this.favoritesService.removeFavorite(
-      type as 'track' | 'album' | 'artist',
-      id,
-    );
+    this.favoritesService.removeFavorite(type, id);
   }
 }
