@@ -10,28 +10,56 @@ import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
 import { validate as isUuid } from 'uuid';
 import { errorMessages } from '../helpers/constants';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class FavoritesService {
   private favorites: Favorites = { artists: [], albums: [], tracks: [] };
 
   constructor(
+    private eventEmitter: EventEmitter2,
     private readonly artistService: ArtistService,
     private readonly albumService: AlbumService,
     private readonly trackService: TrackService,
   ) {}
 
+  @OnEvent('track.deleted')
+  handleTrackDeletedEvent(id: string) {
+    this.removeTrackFromFavorites(id);
+  }
+
+  @OnEvent('artist.deleted')
+  handleArtistDeletedEvent(id: string) {
+    this.removeArtistFromFavorites(id);
+  }
+
+  @OnEvent('album.deleted')
+  handleAlbumDeletedEvent(id: string) {
+    this.removeAlbumFromFavorites(id);
+  }
+
+  onModuleInit() {
+    this.eventEmitter.on(
+      'track.deleted',
+      this.handleTrackDeletedEvent.bind(this),
+    );
+    this.eventEmitter.on(
+      'artist.deleted',
+      this.handleArtistDeletedEvent.bind(this),
+    );
+    this.eventEmitter.on(
+      'album.deleted',
+      this.handleAlbumDeletedEvent.bind(this),
+    );
+  }
+
   getAllFavorites(): FavoritesResponse {
     return {
-      artists: this.favorites.artists
-        .map((id) => this.artistService.findOne(id))
-        .filter(Boolean),
-      albums: this.favorites.albums
-        .map((id) => this.albumService.findOne(id))
-        .filter(Boolean),
-      tracks: this.favorites.tracks
-        .map((id) => this.trackService.findOne(id))
-        .filter(Boolean),
+      artists: this.favorites.artists.map((id) =>
+        this.artistService.findOne(id),
+      ),
+      albums: this.favorites.albums.map((id) => this.albumService.findOne(id)),
+      tracks: this.favorites.tracks.map((id) => this.trackService.findOne(id)),
     };
   }
 

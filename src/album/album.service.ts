@@ -9,18 +9,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto/album.dto';
 import { errorMessages } from '../helpers/constants';
 import { TrackService } from '../track/track.service';
-import { FavoritesService } from '../favorites/favorites.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AlbumService {
   private albums: Album[] = [];
 
   constructor(
+    private eventEmitter: EventEmitter2,
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
-  ) // @Inject(forwardRef(() => FavoritesService))
-  // private readonly favoritesService: FavoritesService,
-  {}
+  ) {}
 
   findAll() {
     return this.albums;
@@ -51,7 +50,7 @@ export class AlbumService {
     this.albums.splice(albumIndex, 1);
 
     this.trackService.nullifyAlbumInTracks(id);
-    // this.favoritesService.removeAlbumFromFavorites(id);
+    this.eventEmitter.emit('album.deleted', id);
   }
 
   nullifyArtistInAlbums(artistId: string) {

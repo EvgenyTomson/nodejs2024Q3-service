@@ -1,23 +1,15 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Track } from './track.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateTrackDto, UpdateTrackDto } from './dto/track.dto';
 import { errorMessages } from '../helpers/constants';
-import { FavoritesService } from '../favorites/favorites.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TrackService {
   private tracks: Track[] = [];
 
-  // constructor(
-  //   @Inject(forwardRef(() => FavoritesService))
-  //   private readonly favoritesService: FavoritesService,
-  // ) {}
+  constructor(private eventEmitter: EventEmitter2) {}
 
   findAll(): Track[] {
     return this.tracks;
@@ -47,7 +39,7 @@ export class TrackService {
       throw new NotFoundException(errorMessages.notFound('Track'));
     this.tracks.splice(index, 1);
 
-    // this.favoritesService.removeTrackFromFavorites(id);
+    this.eventEmitter.emit('track.deleted', id);
   }
 
   nullifyArtistInTracks(artistId: string): void {
