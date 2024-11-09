@@ -9,6 +9,7 @@ import { CreateArtistDto, UpdateArtistDto } from './dto/artist.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { errorMessages } from '../helpers/constants';
 import { TrackService } from '../track/track.service';
+import { AlbumService } from '../album/album.service';
 
 @Injectable()
 export class ArtistService {
@@ -17,6 +18,8 @@ export class ArtistService {
   constructor(
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
+    @Inject(forwardRef(() => AlbumService))
+    private readonly albumService: AlbumService,
   ) {}
 
   findAll() {
@@ -62,5 +65,6 @@ export class ArtistService {
     this.artists.splice(artistIndex, 1);
 
     this.trackService.nullifyArtistInTracks(id);
+    this.albumService.nullifyArtistInAlbums(id);
   }
 }

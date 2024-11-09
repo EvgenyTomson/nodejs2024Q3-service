@@ -42,4 +42,10 @@ export class TrackService {
       track.artistId === artistId ? { ...track, artistId: null } : track,
     );
   }
+
+  nullifyAlbumInTracks(albumId: string): void {
+    this.tracks = this.tracks.map((track) =>
+      track.albumId === albumId ? { ...track, albumId: null } : track,
+    );
+  }
 }
