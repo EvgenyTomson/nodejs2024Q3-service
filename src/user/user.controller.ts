@@ -10,6 +10,9 @@ import {
   BadRequestException,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  SerializeOptions,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,11 +24,15 @@ import { errorMessages } from '../helpers/constants';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ excludePrefixes: ['password'] })
   @Get()
   async getAllUsers() {
     return this.userService.findAll();
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ excludePrefixes: ['password'] })
   @Get(':id')
   async getUserById(@Param('id') id: string) {
     if (!isUuid(id)) {
@@ -40,12 +47,16 @@ export class UserController {
     return user;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ excludePrefixes: ['password'] })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ excludePrefixes: ['password'] })
   @Put(':id')
   async updateUserPassword(
     @Param('id') id: string,
@@ -64,6 +75,6 @@ export class UserController {
       throw new BadRequestException(errorMessages.invalidId);
     }
 
-    await this.userService.remove(id);
+    this.userService.remove(id);
   }
 }

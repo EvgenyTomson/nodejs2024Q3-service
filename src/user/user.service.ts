@@ -3,7 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-import { User, UserWithoutPassword } from './user.interface';
+import { User } from './user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,18 +13,18 @@ import { errorMessages } from '../helpers/constants';
 export class UserService {
   private users: User[] = [];
 
-  findAll(): UserWithoutPassword[] {
-    return this.users.map(({ password, ...rest }) => rest);
+  findAll(): User[] {
+    return this.users;
   }
 
-  findOne(id: string): UserWithoutPassword | undefined {
+  findOne(id: string): User | undefined {
     const user = this.users.find((user) => user.id === id);
     if (!user) return undefined;
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+
+    return user;
   }
 
-  create(createUserDto: CreateUserDto): UserWithoutPassword {
+  create(createUserDto: CreateUserDto): User {
     const newUser: User = {
       id: uuidv4(),
       login: createUserDto.login,
@@ -33,16 +33,12 @@ export class UserService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-
     this.users.push(newUser);
-    const { password, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
+
+    return newUser;
   }
 
-  updatePassword(
-    id: string,
-    updatePasswordDto: UpdatePasswordDto,
-  ): UserWithoutPassword {
+  updatePassword(id: string, updatePasswordDto: UpdatePasswordDto): User {
     const user = this.users.find((user) => user.id === id);
     if (!user) throw new NotFoundException(errorMessages.notFound('User'));
     if (user.password !== updatePasswordDto.oldPassword) {
@@ -53,8 +49,7 @@ export class UserService {
     user.version++;
     user.updatedAt = Date.now();
 
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return user;
   }
 
   remove(id: string): void {
