@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { errorMessages } from '../helpers/constants';
 import { TrackService } from '../track/track.service';
 import { AlbumService } from '../album/album.service';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class ArtistService {
@@ -20,7 +21,9 @@ export class ArtistService {
     private readonly trackService: TrackService,
     @Inject(forwardRef(() => AlbumService))
     private readonly albumService: AlbumService,
-  ) {}
+  ) // @Inject(forwardRef(() => FavoritesService))
+  // private readonly favoritesService: FavoritesService,
+  {}
 
   findAll() {
     return this.artists;
@@ -66,5 +69,6 @@ export class ArtistService {
 
     this.trackService.nullifyArtistInTracks(id);
     this.albumService.nullifyArtistInAlbums(id);
+    // this.favoritesService.removeArtistFromFavorites(id);
   }
 }
