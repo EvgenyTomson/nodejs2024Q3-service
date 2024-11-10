@@ -1,28 +1,15 @@
-import {
-  Injectable,
-  NotFoundException,
-  Inject,
-  forwardRef,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Artist } from './artist.interface';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artist.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { errorMessages } from '../helpers/constants';
-import { TrackService } from '../track/track.service';
-import { AlbumService } from '../album/album.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ArtistService {
   private artists: Artist[] = [];
 
-  constructor(
-    private eventEmitter: EventEmitter2,
-    @Inject(forwardRef(() => TrackService))
-    private readonly trackService: TrackService,
-    @Inject(forwardRef(() => AlbumService))
-    private readonly albumService: AlbumService,
-  ) {}
+  constructor(private eventEmitter: EventEmitter2) {}
 
   findAll() {
     return this.artists;
@@ -66,8 +53,6 @@ export class ArtistService {
 
     this.artists.splice(artistIndex, 1);
 
-    this.trackService.nullifyArtistInTracks(id);
-    this.albumService.nullifyArtistInAlbums(id);
     this.eventEmitter.emit('artist.deleted', id);
   }
 }

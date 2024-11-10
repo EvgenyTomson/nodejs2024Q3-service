@@ -3,13 +3,34 @@ import { Track } from './track.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateTrackDto, UpdateTrackDto } from './dto/track.dto';
 import { errorMessages } from '../helpers/constants';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TrackService {
   private tracks: Track[] = [];
 
   constructor(private eventEmitter: EventEmitter2) {}
+
+  @OnEvent('artist.deleted')
+  handleArtistDeletedEvent(id: string) {
+    this.nullifyArtistInTracks(id);
+  }
+
+  @OnEvent('album.deleted')
+  handleAlbumDeletedEvent(id: string) {
+    this.nullifyAlbumInTracks(id);
+  }
+
+  onModuleInit() {
+    this.eventEmitter.on(
+      'artist.deleted',
+      this.handleArtistDeletedEvent.bind(this),
+    );
+    this.eventEmitter.on(
+      'album.deleted',
+      this.handleAlbumDeletedEvent.bind(this),
+    );
+  }
 
   findAll(): Track[] {
     return this.tracks;
