@@ -1,7 +1,4 @@
-import { Artist } from '../artist/artist.interface';
-import { Album } from '../album/album.interface';
-// import { Track } from '../track/track.interface';
-import { Track } from '@prisma/client';
+import { Track, Artist, Album } from '@prisma/client';
 
 export interface Favorites {
   artists: string[];

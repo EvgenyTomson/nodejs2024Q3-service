@@ -14,19 +14,22 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
-  getAllFavorites() {
-    return this.favoritesService.getAllFavorites();
+  async getAllFavorites() {
+    const favorites = await this.favoritesService.getAllFavorites();
+    // console.log('favorites: ', favorites);
+    return favorites;
+    // return await this.favoritesService.getAllFavorites();
   }
 
   @Post(':type/:id')
   @HttpCode(HttpStatus.CREATED)
-  addFavorite(@Param('type') type: string, @Param('id') id: string) {
-    this.favoritesService.addFavorite(type, id);
+  async addFavorite(@Param('type') type: string, @Param('id') id: string) {
+    await this.favoritesService.addFavorite(type, id);
   }
 
   @Delete(':type/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeFavorite(@Param('type') type: string, @Param('id') id: string) {
-    this.favoritesService.removeFavorite(type, id);
+  async removeFavorite(@Param('type') type: string, @Param('id') id: string) {
+    await this.favoritesService.removeFavorite(type, id);
   }
 }
