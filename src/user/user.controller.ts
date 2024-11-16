@@ -75,6 +75,6 @@ export class UserController {
       throw new BadRequestException(errorMessages.invalidId);
     }
 
-    this.userService.remove(id);
+    await this.userService.remove(id);
   }
 }

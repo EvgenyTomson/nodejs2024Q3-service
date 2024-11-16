@@ -1,0 +1,8 @@
+node_modules
+dist
+doc
+Dockerfile
+Dockerfile.db
+docker-compose.yml
+.env
+.env.local

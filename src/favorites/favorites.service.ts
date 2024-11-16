@@ -53,13 +53,16 @@ export class FavoritesService {
     );
   }
 
-  getAllFavorites(): FavoritesResponse {
+  async getAllFavorites(): Promise<FavoritesResponse> {
     return {
       artists: this.favorites.artists.map((id) =>
         this.artistService.findOne(id),
       ),
       albums: this.favorites.albums.map((id) => this.albumService.findOne(id)),
-      tracks: this.favorites.tracks.map((id) => this.trackService.findOne(id)),
+      tracks: await Promise.all(
+        this.favorites.tracks.map((id) => this.trackService.findOne(id)),
+      ),
+      // tracks: this.favorites.tracks.map((id) => this.trackService.findOne(id)),
     };
   }
 
