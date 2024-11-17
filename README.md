@@ -23,6 +23,16 @@ Use .env.example to create .env file with PORT and DATABASE_URL in it.
 
 ## Run docker containers
 
+With my published prebuilded images:
+
+```
+docker-compose up
+```
+
+If you have any problems with accessing images via docer-hub (contact my in this case via Discord pleace) you can build and run your local images:
+
+First of all comment image sections in docker-compose.yml amd uncomment build sections
+
 For the first time:
 
 ```
@@ -40,7 +50,7 @@ docker-compose up
 You will see log like this:
 
 ```
-app-1       | [Nest] 35  - 11/17/2024, 10:52:51 AM     LOG [NestApplication] Nest application successfully started +215ms
+app-1  | [Nest] 35  - 11/17/2024, 10:52:51 AM  LOG [NestApplication] Nest application successfully started +215ms
 ```
 
 After starting the app on port (4000 as default) you can open

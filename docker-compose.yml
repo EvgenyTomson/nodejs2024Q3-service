@@ -1,8 +1,9 @@
 services:
   database:
-    build:
-      context: .
-      dockerfile: Dockerfile.db
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile.db
+    image: tea79/nodejs2024q3service:database
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -16,9 +17,10 @@ services:
       - app-network
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: tea79/nodejs2024q3service:latest
     restart: always
     environment:
       DATABASE_URL: ${DATABASE_URL}
