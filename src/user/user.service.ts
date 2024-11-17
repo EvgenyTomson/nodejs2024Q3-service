@@ -32,8 +32,6 @@ export class UserService {
         version: 1,
         createdAt: currentTimestamp,
         updatedAt: currentTimestamp,
-        // createdAt: new Date(),
-        // updatedAt: new Date(),
       },
     });
   }
@@ -56,7 +54,6 @@ export class UserService {
         password: updatePasswordDto.newPassword,
         version: user.version + 1,
         updatedAt: currentTimestamp,
-        // updatedAt: new Date(),
       },
     });
   }
