@@ -8,16 +8,10 @@ RUN npm ci
 
 COPY . .
 
-RUN npm run build
-
 RUN npx prisma generate
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-ENTRYPOINT ["docker-entrypoint.sh"]
+RUN npm run build
 
 EXPOSE 4000
 
-# CMD ["npm", "run", "start:prod"]
-# CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:prod"]
+CMD ["npm", "run", "start:mon"]

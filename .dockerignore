@@ -6,3 +6,4 @@ Dockerfile.db
 docker-compose.yml
 .env
 .env.local
+README.md

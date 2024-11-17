@@ -8,24 +8,79 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone git@github.com:EvgenyTomson/nodejs2024Q3-service.git
 ```
 
-## Installing NPM modules
+## Install Docker if needed
+
+You will need [docker-desktop](https://www.docker.com/products/docker-desktop/) if you use Windows or MacOs as your host OS.
+
+## Setting up the Environment
+
+Use .env.example to create .env file with PORT and DATABASE_URL in it.
+
+## Start docker-desktop on your host machine
+
+## Run docker containers
+
+For the first time:
 
 ```
-npm install
+docker-compose up --build
 ```
 
-## Running application
+For other times:
 
 ```
-npm start
+docker-compose up
+```
+
+## Wait until docker container and application in it starts
+
+You will see log like this:
+
+```
+app-1       | [Nest] 35  - 11/17/2024, 10:52:51 AM     LOG [NestApplication] Nest application successfully started +215ms
 ```
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+## For running application on host mahine
+
+1. Run database container
+
+```
+docker-compose up -d database
+```
+
+2. Change DATABASE_URL in your .env file to one "For app rinning on host machine" (see .env.example)
+
+3. Install NPM modules
+
+```
+npm ci
+```
+
+4. Generate Prisma client
+
+```
+npx prisma generate
+```
+
+5. Start application on your host machine
+
+```
+npm run start:dev
+```
+
+or
+
+```
+npm run build
+npm start
+```
 
 ## Testing
 
@@ -37,36 +92,20 @@ To run all tests without authorization
 npm run test
 ```
 
-To run only one of all test suites
+## To stop contaibers use
 
 ```
-npm run test -- <path to suite>
+docker-compose down
 ```
 
-To run all test with authorization
+## To reset database in app container (or host machine depends on where do you run app) use
 
 ```
-npm run test:auth
+npx prisma migrate reset
 ```
 
-To run only specific test suite with authorization
+## To complete migration in app container (or host machine depends on where do you run app) use
 
 ```
-npm run test:auth -- <path to suite>
+npx prisma migrate dev --name mymigration
 ```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
