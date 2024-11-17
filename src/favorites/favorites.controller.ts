@@ -15,10 +15,7 @@ export class FavoritesController {
 
   @Get()
   async getAllFavorites() {
-    const favorites = await this.favoritesService.getAllFavorites();
-    // console.log('favorites: ', favorites);
-    return favorites;
-    // return await this.favoritesService.getAllFavorites();
+    return await this.favoritesService.getAllFavorites();
   }
 
   @Post(':type/:id')

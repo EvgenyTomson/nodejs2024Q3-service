@@ -65,9 +65,7 @@ export class AlbumService {
       throw new NotFoundException(errorMessages.notFound('Album'));
     }
 
-    await this.prisma.album.delete({
-      where: { id },
-    });
+    await this.prisma.album.delete({ where: { id } });
 
     this.eventEmitter.emit('album.deleted', id);
   }

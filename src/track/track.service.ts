@@ -7,8 +7,6 @@ import { Track } from '@prisma/client';
 
 @Injectable()
 export class TrackService {
-  private tracks: Track[] = [];
-
   constructor(
     private prisma: PrismaService,
     private eventEmitter: EventEmitter2,
@@ -40,9 +38,13 @@ export class TrackService {
   }
 
   async findOne(id: string): Promise<Track | undefined> {
-    return this.prisma.track.findUnique({
+    const track = await this.prisma.track.findUnique({
       where: { id },
     });
+    if (!track) {
+      return undefined;
+    }
+    return track;
   }
 
   async create(trackDto: CreateTrackDto): Promise<Track> {
@@ -64,14 +66,14 @@ export class TrackService {
   }
 
   async remove(id: string): Promise<void> {
-    const track = await this.findOne(id);
+    const track = await this.prisma.track.findUnique({
+      where: { id },
+    });
     if (!track) {
       throw new NotFoundException(errorMessages.notFound('Track'));
     }
 
-    await this.prisma.track.delete({
-      where: { id },
-    });
+    await this.prisma.track.delete({ where: { id } });
 
     this.eventEmitter.emit('track.deleted', id);
   }

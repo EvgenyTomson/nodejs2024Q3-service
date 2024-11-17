@@ -10,15 +10,13 @@ import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
 import { validate as isUuid } from 'uuid';
 import { errorMessages } from '../helpers/constants';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from '../database/prisma.service';
-// import { Favorites } from '@prisma/client';
 
 @Injectable()
 export class FavoritesService {
   constructor(
     private readonly prisma: PrismaService,
-    private eventEmitter: EventEmitter2,
     private readonly artistService: ArtistService,
     private readonly albumService: AlbumService,
     private readonly trackService: TrackService,
@@ -41,19 +39,6 @@ export class FavoritesService {
 
   async onModuleInit() {
     await this.initializeFavorites();
-
-    // this.eventEmitter.on(
-    //   'track.deleted',
-    //   this.handleTrackDeletedEvent.bind(this),
-    // );
-    // this.eventEmitter.on(
-    //   'artist.deleted',
-    //   this.handleArtistDeletedEvent.bind(this),
-    // );
-    // this.eventEmitter.on(
-    //   'album.deleted',
-    //   this.handleAlbumDeletedEvent.bind(this),
-    // );
   }
 
   async initializeFavorites() {
@@ -77,16 +62,22 @@ export class FavoritesService {
     if (!favorites)
       throw new NotFoundException(errorMessages.notFound('Favorites'));
 
+    const artists = await Promise.all(
+      favorites.artists.map((id) => this.artistService.findOne(id)),
+    );
+
+    const albums = await Promise.all(
+      favorites.albums.map((id) => this.albumService.findOne(id)),
+    );
+
+    const tracks = await Promise.all(
+      favorites.tracks.map((id) => this.trackService.findOne(id)),
+    );
+
     return {
-      artists: await Promise.all(
-        favorites.artists.map((id) => this.artistService.findOne(id)),
-      ),
-      albums: await Promise.all(
-        favorites.albums.map((id) => this.albumService.findOne(id)),
-      ),
-      tracks: await Promise.all(
-        favorites.tracks.map((id) => this.trackService.findOne(id)),
-      ),
+      artists,
+      albums,
+      tracks: tracks.filter(Boolean),
     };
   }
 
