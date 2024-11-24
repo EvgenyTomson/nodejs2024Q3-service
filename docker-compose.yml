@@ -1,26 +1,27 @@
 services:
-  database:
+  database2:
     # build:
     #   context: .
     #   dockerfile: Dockerfile.db
-    image: tea79/nodejs2024q3service:database
+    image: tea79/nodejs2024q3service:db-ver3
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     networks:
       - app-network
 
-  app:
+  app2:
     # build:
     #   context: .
     #   dockerfile: Dockerfile
-    image: tea79/nodejs2024q3service:latest
+    image: tea79/nodejs2024q3service:app-ver3
     restart: always
     environment:
       DATABASE_URL: ${DATABASE_URL}
@@ -33,7 +34,7 @@ services:
     networks:
       - app-network
     depends_on:
-      - database
+      - database2
 
 networks:
   app-network:

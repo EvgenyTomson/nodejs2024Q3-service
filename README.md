@@ -26,6 +26,14 @@ Use .env.example to create .env file with PORT and DATABASE_URL in it.
 With my published prebuilded images:
 
 ```
+npm ci
+```
+
+```
+npx prisma generate
+```
+
+```
 docker-compose up
 ```
 
@@ -34,6 +42,14 @@ If you have any problems with accessing images via docer-hub (contact my in this
 First of all comment image sections in docker-compose.yml amd uncomment build sections
 
 For the first time:
+
+```
+npm ci
+```
+
+```
+npx prisma generate
+```
 
 ```
 docker-compose up --build

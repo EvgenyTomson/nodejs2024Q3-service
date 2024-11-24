@@ -1,4 +1,4 @@
-FROM postgres:latest
+FROM postgres:17-alpine
 
 ENV POSTGRES_USER=myuser
 ENV POSTGRES_PASSWORD=mypassword
