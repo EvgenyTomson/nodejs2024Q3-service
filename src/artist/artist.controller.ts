@@ -26,9 +26,9 @@ export class ArtistController {
   }
 
   @Get(':id')
-  getArtistById(@Param('id') id: string) {
+  async getArtistById(@Param('id') id: string) {
     if (!isUuid(id)) throw new BadRequestException(errorMessages.invalidId);
-    const artist = this.artistService.findOne(id);
+    const artist = await this.artistService.findOne(id);
     if (!artist) throw new NotFoundException(errorMessages.notFound('Artist'));
     return artist;
   }
@@ -50,8 +50,8 @@ export class ArtistController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteArtist(@Param('id') id: string) {
+  async deleteArtist(@Param('id') id: string) {
     if (!isUuid(id)) throw new BadRequestException(errorMessages.invalidId);
-    this.artistService.remove(id);
+    await this.artistService.remove(id);
   }
 }

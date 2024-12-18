@@ -26,9 +26,9 @@ export class AlbumController {
   }
 
   @Get(':id')
-  getAlbumById(@Param('id') id: string) {
+  async getAlbumById(@Param('id') id: string) {
     if (!isUuid(id)) throw new BadRequestException(errorMessages.invalidId);
-    const track = this.albumService.findOne(id);
+    const track = await this.albumService.findOne(id);
     if (!track) throw new NotFoundException(errorMessages.notFound('Album'));
     return track;
   }
@@ -40,15 +40,18 @@ export class AlbumController {
   }
 
   @Put(':id')
-  updateAlbum(@Param('id') id: string, @Body() updateTrackDto: UpdateAlbumDto) {
+  async updateAlbum(
+    @Param('id') id: string,
+    @Body() updateTrackDto: UpdateAlbumDto,
+  ) {
     if (!isUuid(id)) throw new BadRequestException(errorMessages.invalidId);
     return this.albumService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteAlbum(@Param('id') id: string) {
+  async deleteAlbum(@Param('id') id: string) {
     if (!isUuid(id)) throw new BadRequestException(errorMessages.invalidId);
-    this.albumService.remove(id);
+    await this.albumService.remove(id);
   }
 }

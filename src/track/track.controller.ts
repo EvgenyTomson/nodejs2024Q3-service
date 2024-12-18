@@ -26,9 +26,9 @@ export class TrackController {
   }
 
   @Get(':id')
-  getTrackById(@Param('id') id: string) {
+  async getTrackById(@Param('id') id: string) {
     if (!isUuid(id)) throw new BadRequestException(errorMessages.invalidId);
-    const track = this.trackService.findOne(id);
+    const track = await this.trackService.findOne(id);
     if (!track) throw new NotFoundException(errorMessages.notFound('Track'));
     return track;
   }
@@ -47,8 +47,8 @@ export class TrackController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteTrack(@Param('id') id: string) {
+  async deleteTrack(@Param('id') id: string) {
     if (!isUuid(id)) throw new BadRequestException(errorMessages.invalidId);
-    this.trackService.remove(id);
+    await this.trackService.remove(id);
   }
 }
